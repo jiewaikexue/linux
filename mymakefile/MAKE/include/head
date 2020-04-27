@@ -1,0 +1,6 @@
+#ifndef _HEAD_
+#define _HEAD_
+#include <iostream>
+int fun();
+int fun1();
+#endif
