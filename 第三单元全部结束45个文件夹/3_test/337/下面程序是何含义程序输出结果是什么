@@ -1,0 +1,9 @@
+constchar ca[]={'h','e','l','l','o'};
+const char *cp=ca;
+while(*cp){
+	cout<<*cp<<endl;
+	+cp;
+
+}
+
+while没有办法停下来因为没有\o结束

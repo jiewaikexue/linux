@@ -1,0 +1,8 @@
+  getline（cin,str)
+ 直接键入回车确实可以是getline停下来
+ 但是getline的函数原型的返回之是一个iostream
+ 所以
+ while(getline(cin ,str))
+ 会造成四循环
+
+ 推荐拆开写
