@@ -1,0 +1,16 @@
+(1)
+double dval;
+int  val;
+int *pi
+
+
+
+dval=ival=pi=0;//不能把指针赋值给费指针
+
+
+
+
+
+davl=ival=0;
+
+pi=0;

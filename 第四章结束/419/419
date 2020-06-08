@@ -1,0 +1,25 @@
+
+题目：
+
+    假设ptr的类型是指向int的指针，vec的类型是 vector<int>,ival的类型是int
+    说明下面的表达式是何含义？如果有错，又该如何修改？
+
+    （1)ptr !=0&&*ptr++
+     (2)ival++&&ival
+     (3)vec[ival++]<=vec[ival]
+
+解答：
+    （1）首先判断ptr指针是否为空
+        如果是空指针，就false，
+        根据优先级 会先进行++操作；
+        但是是后置++，
+        所以会先*ptr 然后在对ptr++；
+    （2）指针+1实际上是+上sizeof（type）
+        所以ival++ 加的是sizeof（int）
+        这个实际上是先进行判断ival
+        如果ival是非0则+1
+        然后去&&右边
+
+        建议改写if（ival&&（ival+1）
+    （3）
+

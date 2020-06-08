@@ -1,0 +1,9 @@
+语句：
+    string s="world";
+    string pl=s+s[s.size()-1]=='s'?"":"s";
+实际的运算顺序
+    
+    string pl=((s+s[s.size()-1])=='s'?"":"s");
+修改：
+
+    string pl=s+(s[s.size()-1]=='s'?"":"s");

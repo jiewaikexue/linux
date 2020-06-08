@@ -1,0 +1,7 @@
+ constexpr int size=5;
+ int ia[size]={1,2,3,4,5};
+ for(int *ptr=ia,ix=o;ix!=size&&ptr!=ia+size)p;++ix,++ptr)
+{
+
+}
+/*就是个简单的便利*/

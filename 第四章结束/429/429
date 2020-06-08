@@ -1,0 +1,15 @@
+题目：
+    推断下面代码的输出结果，并说明理由。实际运行之后，和你的想法一样吗，为什么？
+
+
+    int x[10];int *p=x;
+    cout<<sizeof(x)/sizeof(*x)<<endl;
+    cout<<sizeof(p)/sizeof(*p)<<endl;
+
+
+    10
+    1
+
+实际情况
+10
+我这是64位机器

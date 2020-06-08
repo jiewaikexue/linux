@@ -1,0 +1,9 @@
+static_cast<type> (x)
+dynamic_cast<type>(x)
+const_cast<type>(x)
+reinterpret<type>(x)
+
+第一个就是普通的强制类型转换
+第二个还没学到
+第三个是  去掉底层congst 也就是把常亮转换成变量
+第四个是 把对象二二进制位拿出来，然后在按照括号里面的类型读去

@@ -1,0 +1,25 @@
+ 假设有如下定义
+ 、
+char cval;
+int ival;
+unsigned int ui;
+float fval;
+double dval;
+
+
+请回答 在下面的表达式中发生了隐士类型转换吗？如果有，指出来
+
+1. cval='a'+3;
+2. fval=ui-ival*1.0;
+3. dval=ui *fval;
+4. cval=ival+fval+dval;
+
+
+解答
+1.a整形提升 转换成int 和3运算之后 得到（int）d
+    最后在赋值时，为了达到类型匹配，被截断了。
+2.ival*1.0 这个时候 ival会先转换成double 然后ui和double类型运算 也会转换成double
+    从无符号书转换成有符号数，这个时候很危险。
+    最后double类型会转换成float类型
+3.ui会转换成float
+

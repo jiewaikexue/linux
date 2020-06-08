@@ -1,0 +1,16 @@
+
+
+
+
+unsigned long ul1=3 ,ul2=7;
+(a)ul1&ul2
+(b)ul1|ul2
+(c)ul1&&ul2
+(d)ul1||ul2
+
+解答：
+ul1=0011
+ul2=0111
+(a)3
+(b)7
+(c)(d)1
