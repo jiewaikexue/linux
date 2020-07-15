@@ -1,0 +1,5 @@
+#!/bin/bash
+[ $# -lt 1 ] &&echo "参数小于一个"&& exit 99
+spaceline=$(grep "^[[:space:]]*$" $1 | wc -l)&& echo "spaceline: $spaceline"
+
+

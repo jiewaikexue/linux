@@ -1,0 +1,152 @@
+bash的配置文件
+    两类：按照生效范围分类
+        全局配置：
+            /etc/profile
+            /etc/bashrc
+        个人配置：
+            ~/.bash_profile
+            ~/.bashrc
+    按功能划分：两类
+        profile类：为交互式扥登陆的shell提供配置
+            全局： 1./etc/profile 
+                   2./etc/profile.d/*.sh
+                    ---->一般只要是交互式登陆，都会去执行这些文件
+            个人：
+                    1.~/.bash_profile
+            功能：
+                1.用于定义环境变量
+                2.运行命令或脚本
+        bashrc：为非交互式登陆的shell提供配置
+            全局：/etc/bashrc
+            个人：~/.bashrc
+            功能：
+                1.定义命令别名
+                2.定义本地变量
+
+
+        ==>shell登陆的类别
+            交互式登陆：
+                    1.直接通过终端输入账户密码登陆
+                    2.使用 su - username
+
+                    读取顺序：
+                        1./etc/profile ---->/etc/profile.d/*.sh--->~/.bash_profile ----->~./bashrc----->/etc/bashrc
+
+            非交互式登陆：
+                    su 用户名
+                    图形界面下打开的终端
+                    执行脚本
+            读取顺序：
+                ~/.bashrc ----> /etc/bashrc ----->/etc/profile.d/*.sh
+        总结：
+            全局的都是 正常文件
+            个人的都是 家目录下面的隐藏文件
+            带profile的都是交互式的
+            单纯的bashrc都是非交互式的。
+            脚本和环境变量写到profile
+        问题：
+            1.定义所有用户都生效的。
+                全局交互：/etc/profile /etc/profile.d/*.sh
+                全局非交互：/etc/bashrc
+            2.让用户的（管理员，非管理员）PATH环境变量的值，多出一个路径
+                例如：/usr/local/apache2/
+
+bash中的算数运算
+let命令：
+        id++, id--  variable post-increment, post-decrement
+        ++id, --id  variable pre-increment, pre-decrement
+        -, +    unary minus, plus
+        !, ~    logical and bitwise negation
+        **    exponentiation
+        *, /, %   multiplication, division, remainder
+        +, -    addition, subtraction
+        <<, >>    left and right bitwise shifts
+        <=, >=, <, >  comparison
+        ==, !=    equality, inequality
+        &   bitwise AND
+        ^   bitwise XOR
+        |   bitwise OR
+        &&    logical AND
+        ||    logical OR
+        expr ? expr : expr
+        conditional operator
+        =, *=, /=, %=,
+        +，-，*，/，%，**
+=============================================================
++ - * / %
+        实现算数运算：
+        （1）let var = 算数表达式
+            [jie@VM-0-9-centos bash环境配置及脚本]$ num1=11
+            [jie@VM-0-9-centos bash环境配置及脚本]$ num2=1
+            [jie@VM-0-9-centos bash环境配置及脚本]$ let num3=$num1+$num2
+            [jie@VM-0-9-centos bash环境配置及脚本]$ echo $num3
+        (2)var=$[算数表达式]
+            var= $[$num1 +$num2]
+        (3)var =$(($num1+$num2))
+        /*一般不用第四个*/
+        (4)var=$(ecpr  A B C...)
+
+            A是备操作数
+            B，是操作符
+            C，是备操作数
+            必须要有空格风格
+        --->这个命令需要对* 进行转义\*
+=====================================================================
+增强型赋值：
+    +=，-=，*=，\=,%=
+    （1）
+        let var+=1;
+=   =   =   =   =   =   =   = 
+自增自减
+    let var++;
+    let var--
+
+    练习：写一个脚本，计算/etc/passwd文件中第10个用户，和第20个用户的id之和
+          ~,传递两个文件路径作为参数给脚本，计算两个文件中所有的空白行之和。
+          3.统计etc /var /usr目录下有多少个子目录及文件： 
+
+
+
+
+条件测试
+    判断某些需求是否满足，需要测试机制来实现
+    Note;专用的测试表达式需要有测试命令辅助弯沉个测试过程
+
+    测试命令：
+     1.test xxx
+     2.[ xxx ]:前后必须有一个空格。不然报错  一个【】是命令
+     3.[[xxx]] 两个【】是关键字
+    bash的测试类型
+        数值测试：
+            -gt：>
+            -ge：>=
+            -eq: =
+            -ne:!=
+            -lt: <
+            -le:<=
+            总结：
+                g大于 e等于 l小于
+        字符串测试：
+            ==或=：
+            >;
+            <:
+            !=:
+            =~:左侧字符串是否是右侧的子串
+                Note:此表达式，一般用于[[ xxxx ]]中
+            -z "字符串": 字符串是否为空？ 空真
+            -n "字符串"：测试字符串是否为非空 非空 真
+        NOTE:用于字符串比较时
+             用到的操作数，都应该加引号
+        文件测试
+            
+
+bash自定义退出状态码
+    exit #:自定义退出状态码
+        注意：脚本一旦遇到exit命令脚本会立刻终止：终止状态取决于exit[n]定义的n
+        注意：如果未给脚本指定退出状态码，则整个脚本的退出状态码取决于，脚本中执行的最后一条命令的状态码。
+
+        练习：写一个脚本
+            接受一个文件路径作为参数：在脚本中写
+            如果参数个数小于1，则提示用户至少应该给一个参数，并立即退出
+            否则，显示第一个参数所指向的文件中的空白行数
+

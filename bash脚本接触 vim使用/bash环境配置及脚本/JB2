@@ -1,0 +1,21 @@
+#!/bin/bash
+spaceline=$(grep "^[[:space:]]*$" $1 |wc -l)
+spaceline2=$(grep "^[[:space:]]*$" $2 |wc -l)
+spacelineall=$[$spaceline+$spaceline2]
+echo " space line all :$spacelineall"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

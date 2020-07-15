@@ -1,0 +1,9 @@
+#!/bin/bash
+num1=$(ls -l $1 |wc -l)
+num2=$(ls -l $2 |wc -l)
+num3=$(ls -l $3 |wc -l)
+echo "/etc :$num1"
+echo "/var :$num2"
+echo "/usr :$num3"
+echo "all :$(($num1+$num2+$num3))"
+
