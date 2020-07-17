@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]
+then
+    echo "At least"
+    exit 1
+fi
+
+if   id $1 &> /dev/null
+then
+    echo "$1 "
+    exit 0
+else 
+    useradd $1
+    [ $? -eq 0 ] &&echo "$1" | passwd --stdin &> /dev/null
+    exit 0
+fi
