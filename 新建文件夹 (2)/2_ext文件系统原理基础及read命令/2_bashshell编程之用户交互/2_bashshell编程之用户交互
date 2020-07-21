@@ -1,0 +1,12 @@
+ read 命令：
+    read 变量 变量 ...
+    输入各种各样的信息 以空格分开 对位赋值给变量
+    参数：
+        -p "xxxxx"：自己定义一个提示信息
+                    eg： read -p "xxxxx" name
+        -t # :设定等待的超时时间 #s
+
+bash -n /path
+    检测脚本中的语法错误
+bash -x /path
+调试执行（单步执行]）

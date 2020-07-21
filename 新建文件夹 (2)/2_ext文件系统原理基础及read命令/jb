@@ -1,0 +1,11 @@
+#!/bin/bash
+disks= fdisk -l /dev/[shv]d[a-z] | grep -o "^磁盘 /dev/[shv]d[a-z]" | wc -l
+echo $disks
+if [ "$disks" == "1" ]
+then
+  fdisk -l /dev/[shv]d
+  exit 1
+else
+fdisk -l $( fdisk -l /dev/[shv]d[a-z] | grep -o "^磁盘 /dev/[shv]d[a-z]"  |tail  -1 |cut -d' ' -f2)
+  exit 1
+fi
