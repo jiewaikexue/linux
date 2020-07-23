@@ -1,0 +1,35 @@
+btr#fs文件系统:
+BTR#FS: GPL(开源) 
+        --->最重要的特性.写时复制
+        --->设计目标,为了取代 ext3/ext4
+核心特征: 
+        多物理卷支持:btrfs可由多个物理卷组成:支持RAID,以及联机添加,移除,修改
+        写时复制更新机制:复制更新一集替换指针,而非就地更新
+        数据及元数据校验码:checksum
+        子卷:sub_volume
+        快照:支持快照的快照
+
+
+
+btrfs的使用:有一个统一的命令工具:
+文件系统的创建:
+      mkfs.btrfs:
+          -L 'LABLE' :指明卷标
+          -d <type> :指明类型 RAID1 RAID5 RAID6 RAID10 RAID01 RAID0
+          -m <profile> :RAID1 RAID5 RAID6 RAID10 RAID01 RAID0 single dup
+          -O <feature>
+             |-   -O list-all:列出所有支持的feature.
+          
+          eg: mkfs.btrfs -L mydata /dev/sdb /dev/sdc
+            ------>这俩盘就组成了一个btrfs系统
+              btrfs filesystem show  //显示b树文件系统
+          
+btrfs文件系统属性查看 
+      btrfs filesystem  show
+挂载文件系统
+      mount -t btrfs /dev/xxx
+btrfs的透明压缩算法:(原生支持,自带)
+      1.mount -o cmpress-lzo    设备    挂载点
+      2.mount -o cmpress-zlib  设备    挂载点
+子命令:
+        filesystem  device balance submove

@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+read -p "请输入一个文件路径:" filename
+if [ -z "$filename"  ];then
+    echo "请输入一个路径"
+    exit 2
+elif [ ! -e "$filename" ];then 
+    echo "不存在这个文件"
+    exit 2
+elif [ -f "$filename" ];then
+      echo "f"
+elif [ -p "$filename" ];then
+      echo "p"
+elif [ -S "$filename" ];then
+      echo "s"
+elif [ -d "$filename" ];then
+      echo "d"
+elif [ -L "$filename" ];then
+      echo "L"
+elif [ -c "$filename" ];then
+      echo "c"
+elif [ -b "$filename" ];then
+      echo "b"
+else 
+    echo "鬼知道这是什么"
+    exit 2
+fi 
+exit 1
+    

@@ -1,0 +1,61 @@
+回顾; 
+  if语句, bash -n(检测脚本语法错误)  bash -x 单步执行脚本
+  watch -# 多少#s一刷新
+  单/双分支:
+    if conditon ;then
+      xxxxxx
+    else
+        xxxx
+    fi
+  多分支:
+
+    if conditon ;then
+        xxxxx
+    elif conditon ;then
+        xxxxx
+    elif conditon ;then
+        xxxxx
+    elif conditon ;then
+        xxxxx
+    else conditon
+        xxxxx
+    练习:用户键入文件路径,来判断文件类型
+  嵌套分支:
+  
+循环控制语句:for while until  
+    for循环:
+      for 变量名 in 列表; do
+          循环体
+      done
+
+        执行机制:
+            依次将列表中的元素,当值赋值给 前面的  变量名;
+            每次赋值完成之后,暨执行依次循环体.
+            知道列表中的元素耗尽
+            ====>退出条件就是列表中的元素用尽
+      
+        ----自动生成列表
+            eg: for  xxx in {1..100} ;do
+                done
+
+      列表的生成方式:
+          (1)in 直接给出列表:
+          (2)生成整数列表:
+                1.使用花括号:
+                    in {start .. end}
+                2.使用seq命令:
+                    seq # # #:
+                        第一个#: start (可以省略)
+                        第二个#: 步长  (可以省略)
+                        第三个#: end
+                    eg: for xxx in $(seq # # #);do
+          (3)使用能返回列表的命令
+                $(COMMAND)
+                eg:
+                  for xxx in $(ll /dev);do
+          (4)glob
+          ========>可以使用通配命令
+          (5)变量引用:
+              $@,$*
+              使用参数列表为for的列表
+            

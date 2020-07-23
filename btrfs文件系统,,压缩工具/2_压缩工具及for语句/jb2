@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+mkdir 99;cd 99
+for (( i=0; i<=4;i++ ))
+do
+  touch ./"$i"
+done
