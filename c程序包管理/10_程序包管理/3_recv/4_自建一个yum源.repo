@@ -1,0 +1,16 @@
+[base]
+name=Base Repo on 172.16.0.1
+baseurl=http:://172.16.0.1/多级文件路径
+gpgcheck=0
+
+[epel]
+name=Fedora Epel xxxx
+baseurl=http://xxxxxxxx
+gpgcheck=0
+
+
+
+
+
+
+#这是俩仓库

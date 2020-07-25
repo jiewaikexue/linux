@@ -1,0 +1,160 @@
+centos上rmp命令管理程序包
+  安装卸载升级数据库更新
+
+
+
+
+以下所有命令,需要我们提前准备好rpm包
+rpm命令:
+    <1>安装: rpm -i:
+        rpm {-i/--install}  [install -optios]  package_file ...
+                   ------------------
+                 |-  -v:显示详细信息
+                 |-  -vv;显示更多的信息详细
+                 |-  -h:以#显示程序包管理执行进度.
+                 |-        ---->每个#代表2%的进度
+                   ------------------
+                     eg:rpm -ivh xxxx.rmp
+                 ===>[install -options]中
+                         --test:测试安装,但不执行真正的安装过程
+                         --replacepkgs:重新安装,替换原有
+                                       (会把原来的配置覆盖掉或者不使用新安装的配置文件)
+                         --ignoreos:忽略包的平台要求
+                         --nodeps: 忽略依赖关系:(循环依赖,)
+                         --nodigest:不检查包的完整性
+                         --nodesignature:不检查包的来源的合法性
+                         --noscripts:不执行rpm包中的脚本
+                               -------------------------
+                                 四类脚本
+                               |-      %pre;   安装前脚本
+                               |-      %post:  安装后脚本
+                               |-      %preun: 卸载前脚本
+                               |-      %postun:卸载后脚本
+                               |-     --nopre
+                               |-     --nopost
+                               |-     --preun
+                               |-     --postun
+                               --------------------------
+    <2>升级
+        1. rpm {-U/--upgrade}  [install -optios]  package_file ...
+        1. rpm {-U/--freeshen}  [install -optios]  package_file ...
+            U和F的区别
+                U:机子上安装的右旧版的程序包,就升级
+                  如果没有的话就,安装旧版本的安装包 
+                F:机子上如果有,就升级.
+                  如果没有就算了
+              ------>这两个后面跟的package_file都是旧版本的
+            eg:rmp -Uhv xxxx.rmp
+
+              --force:强制升级
+
+          注意:
+              (1)不能对内核做升级:linux支持多内核版本并存
+                  ----->新内核直接安装新版本内核就行了
+              (2)如果源程序包到的配置文件安装后曾被修改,
+                  升级时,新版本提供的同一个配置文件
+                  并不会直接覆盖老版本的配置文件
+                  而是把新版本的文件重命名
+                  oldfile.rpm -----> oldfile.rpmnew
+              
+    <3>降级:
+        --oldpackages :降级
+
+    <4>查询:  rpm -q .......
+          rpm {-q | --query} [select-opertion] [query-option] xxxx.rmp
+
+      |-----------------------------------------------
+          [select--option]
+                  -a:查询所有已经安装的包
+                  -f:查询指定的文件有那个程序包安装生成 
+                  -g:查询指定包组的程序包
+                  -d/-- docfiles: 查询程序的帮助文档
+                  -p/--package xxxx.rpm:指明查询操作,,是针对尚未安装的包的
+                  --whatprovides :不仅仅能够查询那个文件是有那个包生成的
+                                  甚至可以查询功能
+                  --whatrequire:查询一个能力/文件,被那些能力/文件所依赖
+                  --whatprovice:
+          [query-options]
+                  --changelog :查看rpm包的修改日志
+                  -c/--configfiles: 查询程序包的配置文件
+                  -i/--info:查看包的相关消息
+                      ---------------------------------------------------------
+                      |-    ot@VM-0-9-centos 2_rpm命令管理程序包]# rpm -qi sl
+                      |-    Name        : sl
+                      |-    Version     : 5.02
+                      |-    Release     : 1.el7
+                      |-    Architecture: x86_64
+                      |-    Install Date: 2020年07月18日 星期六 14时35分51秒
+                      |-    Group       : Amusements/Graphics
+                      |-    Size        : 17511
+                      |-    License     : Copyright only
+                      |-    Signature   : RSA/SHA256, 2014年12月06日 星期六 22时47分44秒, Key ID 6a2faea2352c64e5
+                      |-    Source RPM  : sl-5.02-1.el7.src.rpm
+                      |-    Build Date  : 2014年12月05日 星期五 17时49分43秒
+                      |-    Build Host  : buildvm-03.phx2.fedoraproject.org
+                      |-    Relocations : (not relocatable)
+                      |-    Packager    : Fedora Project
+                      |-    Vendor      : Fedora Project
+                      |-    URL         : https://github.com/mtoyoda/sl
+                      |-    Summary     : Joke command for when you type 'sl' instead of 'ls'
+                      |-    Description :
+                      |-    The sl (Steam Locomotive) command is a joke which displays a train on your
+                      |-    terminal when you accidentally type 'sl' instead of 'ls'.
+                      ------------------------------------------------------------------
+              -l:列出指定的程序包安装后生成的所有文件
+                  (查看指定程序包安装后生成的所有文件)
+              --triggers;显示触发器脚本
+
+              --scripts:列出程序包自带的脚本片段
+              --require:查询指定的程序包锁依赖的CAPATLITY
+              --provides:列出指定程序包锁提供的capability
+
+            ================>用法集合
+            -qi:(info)
+            -qf:(file)
+            -qc:(configfiles配置文件)
+            -ql:(list 生成文件)
+            -qd(docfiles 程序的文档)
+            -qpi -qpf ...
+            -qa:(all)
+    <5>卸载:
+      rpm{-e/--erase} [--almayches] [--nodeps] [--noscripts]
+      [ --notriggrs ] [--test] Package_name
+
+   
+   <6>在包安装后文件是否发生改变进行校验:
+        rpm -V/--verify
+              
+              SMD5LUGTP
+    <7>包的来源的合法性验证及完整性验证
+            完整性验证:SHA256
+            来源合法性验证:RSA 
+            公钥加密技术: 
+                        1.对称加密技术:加密解密使用同一个秘钥
+                        2.非对称加密技术;秘钥是成对的
+                                            pubkey:公钥
+                                            secret key:私钥
+                            ----------->
+                                制作者,使用单向加密算法,计算出包的特征码
+                                计算出来以后,会用私钥将特征码加密并附加到包的尾部
+        ===>1导入公钥(GPG秘钥) : rpm --import /PATH/.../GPG-pubkey-file
+                            centos7 发行版光盘提供的秘钥文件:RPM-GPG-KRY-CENTOS7
+
+
+
+        ===> -K:实现校验,直接检验一个程序包的来源的合法性和包的完整性(不用安装)
+                            
+                            
+            
+
+    <8>数据库重建:
+            /var/lib/rpm:rpm的数据库文件(运行时数据库)都在这里
+            rpm {--initdb|--rebuilddb}
+                    initdb:初始化:
+                            如果实现不存在数据库,则新建之;否则,不执行任何操作
+                    rebuillddb :重建:
+                            无论当前存在与否,直接重新创建数据库
+
+        ------------->  centos 7 rpm同时只能跑一个
+
+        
