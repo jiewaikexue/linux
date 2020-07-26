@@ -1,0 +1,161 @@
+概念修正:
+        yum配置文件:引入了yum的下载目的仓库,规定了各种属性
+                    海量的yum配置文件,组成了yum源
+                    --->yum在下载的时候,会从yum源里的哥哥配置文件
+                        逐一访问对端服务器,知道找到或者找不到
+
+        yum源:是指在/etc/yum.conf/*,或者/etc/yum.conf.d/*
+              这些所有的yum配置文件合起来叫做yum源
+
+        yum仓库:指的是在互联网服务器上,存放有各种各样的package
+                的地方.也就是yum源里面的配置文件里面的url所指
+
+
+
+
+
+如何使用光盘当做本地yum仓库
+
+    (1)挂载光盘到某个目录:例如 /media/cdrom
+        # mount -r -t iso9660 /dev/cdroom  /media/cdrom
+
+    (2)创建yum仓库
+        [centos7]
+        name=xxxx
+        baseurl=xxxxxxx
+        gpgcheck=xxxxxx
+        enabled=1
+
+
+yum的repo中的可以使用的变量
+    ------->这几个组合起来,就当成字符串
+    $releasever :当前os的发行版的主版本号
+    $arch :平台类型
+    $basearch: 基础平台
+    $YUM0-$YUM9 :用户可以自定义的变量
+
+
+创建yum仓库:
+      使用工具 createrepo
+        
+      1.尝试创建yum仓库(本地)
+        create ./   :
+          扫描本地文件夹下的所有的packages
+          然后,在本地创建一个repodata文件夹
+          ./repodata:
+                  下面有很多存放有整个仓库相关信息的已经分类好的文件
+                  以及
+                  repomd.xml  ----->存放分类信息的文件的校验码
+      2.本地仓库创建好了 
+        在配置一个yum配置文件就行了
+
+
+自己使用源码包安装,不在rpm包的管理范围之内,日后卸载需要自己去指定目录下卸载
+
+
+程序包的编译安装:
+    1.rpm包的两种形式:
+                1.源码级别的rpm包
+                2.别已经编译号的rpm包:
+                      eg: xxxxx.版本号.release.src.rpm
+                        ----->这个没有平台,而是src   ------>对方并不知道你的平台是什么
+                        ------------------->编译制作成完全适合自己平台(cpu指令集)的包
+                        ----->表示这个包是个rpm包,但是需要我们自己编译
+                        ----->安装后,使用rpmbuild命令制作成二进制的rpm包,然后再安装.
+
+                3.源代码的组织格式
+                          多文件:文件中的代码之间,很可能是存在跨文件依赖关系:
+                          
+                4,由于依赖关系及其复杂,所以有专门的项目管理工具
+                    c,c++ : make
+                            --->make依赖于make的配置文件
+                            (configure----->Makefile.in---->makefile)
+                            --->
+                    java  : maven
+                5.编译安装标准三步骤:
+                       ------------------------------------------------------------------------
+                      |-    ./configure    (脚本)  :
+                      |-            <1>(1) 通过选项传递参数,指定起用特性,安装路径等
+                      |-               (2)执行时会参考用户的指令,以及Makefile.in文件生成makefile
+                      |-            <2>检查依赖到的外部环境:
+                      |-                ./configure一旦错误,make失败,后续无法执行
+                      
+
+                      |-    make           (执行makefile)(关键步骤)(调用编译器)
+                      |-            <1>根据makefile去构建应用程序
+
+
+                      |-    make install :(脚本)
+                      |-            <1>就相当于使用install 命令 
+                      |-            ----->cp dd install
+                        --------------------------------------------------------------------------- 
+                      
+                      开放工具:
+                            autoconf: 需要结合特定的配置文件,从而生成chonfigure 脚本
+                            automake: 生成 Makefile.in
+                      文件来源:依赖于开发工具
+                          ./configure :
+
+                      建议:安装前一定要查看install文档,或者readme
+
+
+        开源程序源代码的获取:(源代码级别的)
+                官方的自建站点:
+
+                代码托管:
+                      SourceForge
+                      github
+                      code.google.com
+                
+
+        编译c源代码程序包:
+            前提:提供农开放工具及开发环境
+                开发工具:make,gcc
+                开发环境:开发库,头文件
+                  glibc : 标注库(兼容poisx标准)
+                  
+                  通过"包组"提供开发环境
+                        centos6: "Development  Tools"
+                             "Server Platfrom Development",
+                        centos7: 开发工具组
+                              yum grouplist
+
+
+    |- ----------------------------------------------------------------------------                   
+    |-         第一步:configure脚本
+    |-             选项:指定安装位置,指定启用的特性
+    |-             1. ./configure  --help
+    |-                 选项分类;
+    |-                       安装路径设定;
+    |-                         --prefix=/指定目录 :指定默认的安装路径 :默认是/usr/local
+    |-                         --sysconfdir=/指定目录 :指明配置文件安装路径
+    |-                       
+    |-                       system types系统类型:(编译是可以交叉编译的)
+    |-                       Optional Features:可选特性
+    |-                             --disable-xxx
+    |-                             --enable-xxx[=ARG]
+    |-                       Optional Packages:可选程序包(依赖到的其他程序包)
+    |-                             --with-Package[=ARG]
+    |-                             --without-Package
+    |-       第二步:make
+    |-           ./configure之后(主要是check各个包),在包租的文件夹之下,就已经生成了一个makefile
+    |-       第三步: make install
+    |- ----------------------------------------------------------------------------                   
+    安装后的配置:
+        (1)导出二进制程序目录到 PATH环境目录中区
+            临时:extern PATH=$PATH:xxxx
+            <1>永久生效:
+                  编辑/etc/profile.d/程序名称.sh
+                  在改文件最后添加 export PATH=/PATH/to/BIN:$PATH
+        (3)导出库文件路径
+            编辑/etc/ld.so.conf.d/程序包的名字.conf
+                添加新的库文件锁在目录到此
+                让系统重新生成缓存
+                  ldconfig  [-v]
+        (4)导出头文件:
+            基于链接的方式实现
+            ln -sv  xxxx xxxx
+
+        (5)导出帮助手册
+            编辑/etc/man.config文件
+            添加一个manpath

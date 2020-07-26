@@ -1,0 +1,77 @@
+centos上rmp命令管理程序包
+  安装卸载升级数据库更新
+
+
+
+
+以下所有命令,需要我们提前准备好rpm包
+rpm命令:
+    <1>安装: rpm -i:
+        rpm {-i/--install}  [install -optios]  package_file ...
+                   ------------------
+                 |-  -v:显示详细信息
+                 |-  -vv;显示更多的信息详细
+                 |-  -h:以#显示程序包管理执行进度.
+                 |-        ---->每个#代表2%的进度
+                   ------------------
+                     eg:rpm -ivh xxxx.rmp
+                 ===>[install -options]中
+                         --test:测试安装,但不执行真正的安装过程
+                         --replacepkgs:重新安装,替换原有
+                                       (会把原来的配置覆盖掉或者不使用新安装的配置文件)
+                         --ignoreos:忽略包的平台要求
+                         --nodeps: 忽略依赖关系:(循环依赖,)
+                         --nodigest:不检查包的完整性
+                         --nodesignature:不检查包的来源的合法性
+                         --noscripts:不执行rpm包中的脚本
+                               -------------------------
+                                 四类脚本
+                               |-      %pre;   安装前脚本
+                               |-      %post:  安装后脚本
+                               |-      %preun: 卸载前脚本
+                               |-      %postun:卸载后脚本
+                               |-     --nopre
+                               |-     --nopost
+                               |-     --preun
+                               |-     --postun
+                               --------------------------
+centos上rmp命令管理程序包
+  安装卸载升级数据库更新
+
+
+
+
+以下所有命令,需要我们提前准备好rpm包
+rpm命令:
+    <1>安装: rpm -i:
+        rpm {-i/--install}  [install -optios]  package_file ...
+                   ------------------
+                 |-  -v:显示详细信息
+                 |-  -vv;显示更多的信息详细
+                 |-  -h:以#显示程序包管理执行进度.
+                 |-        ---->每个#代表2%的进度
+                   ------------------
+                     eg:rpm -ivh xxxx.rmp
+                 ===>[install -options]中
+                         --test:测试安装,但不执行真正的安装过程
+                         --replacepkgs:重新安装,替换原有
+                                       (会把原来的配置覆盖掉或者不使用新安装的配置文件)
+                         --ignoreos:忽略包的平台要求
+                         --nodeps: 忽略依赖关系:(循环依赖,)
+                         --nodigest:不检查包的完整性
+                         --nodesignature:不检查包的来源的合法性
+                         --noscripts:不执行rpm包中的脚本
+                               -------------------------
+                                 四类脚本
+                               |-      %pre;   安装前脚本
+                               |-      %post:  安装后脚本
+                               |-      %preun: 卸载前脚本
+                               |-      %postun:卸载后脚本
+                               |-     --nopre
+                               |-     --nopost
+                               |-     --preun
+                               |-     --postun
+                               --------------------------
+    <2>升级
+        1. rpm {-U/--upgrade}  [install -optios]  package_file ...
+

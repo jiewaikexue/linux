@@ -1,0 +1,100 @@
+    yum的命令
+                ---------------------------------------------------------------------G
+            |-      command is one of:
+            |-      * install package1 [package2] [...]
+            |-      * update [package1] [package2] [...]
+            |-      * update-to [package1] [package2] [...]
+            |-      * update-minimal [package1] [package2] [...]
+            |-      * check-update
+            |-      * upgrade [package1] [package2] [...]
+            |-      * upgrade-to [package1] [package2] [...]
+            |-      * distribution-synchronization [package1] [package2] [...]
+            |-      * remove | erase package1 [package2] [...]
+            |-      * autoremove [package1] [...]
+            |-      * list [...]
+            |-      * info [...]
+            |-      * provides | whatprovides feature1 [feature2] [...]
+            |-      * clean [ packages | metadata | expire-cache | rpmdb | plugins | all  ]
+            |-      * makecache [fast]
+            |-      * groups [...]
+            |-      * search string1 [string2] [...]
+            |-      * shell [filename]
+            |-      * resolvedep dep1 [dep2] [...]
+            |-      (maintained for legacy reasons only - use repoquery or yum provides)
+            |-      * localinstall rpmfile1 [rpmfile2] [...]
+            |-      (maintained for legacy reasons only - use install)
+            |-      * localupdate rpmfile1 [rpmfile2] [...]
+            |-      (maintained for legacy reasons only - use update)
+            |-      * reinstall package1 [package2] [...]
+            |-      * downgrade package1 [package2] [...]
+            |-      * deplist package1 [package2] [...]
+            |-      * repolist [all|enabled|disabled]
+            |-      * repoinfo [all|enabled|disabled]
+            |-      * repository-packages <enabled-repoid> <install|remove|remove-or-reinstall|remove-or-distribution-synchronization> [package2] [...]
+            |-      * version [ all | installed | available | group-* | nogroups* | grouplist | groupinfo  ]
+            |-      * history [info|list|packages-list|packages-info|summary|addon-info|redo|undo|rollback|new|sync|stats]
+            |-      * load-transaction [txfile]
+            |-      * updateinfo [summary | list | info | remove-pkgs-ts | exclude-updates | exclude-all | check-running-kernel]
+            |-      * fssnapshot [summary | list | have-space | create | delete]
+            |-      * fs [filters | refilter | refilter-cleanup | du]
+            |-      * check
+            |-      * help [command]
+            ------------------------------------------------------------------------
+            
+            显示仓库列表
+                repolist [ all | enabled |disabled ] :显示[所有 | 起用的 |不启用的] yum源(yum仓库)
+            显示程序包
+                list  [专有选项]
+                    # yum list [all |glob_exp1] [glob_exp2] ....    ---->支持glob
+                    # yum list {avaliable | installed|updates} [glob_exp1] ....
+            安装程序包
+                install
+                    yum install [package1 ] [package2] 
+            重新安装
+                reinstall
+                    yum reinstall xxxx
+            升/降级指定程序包
+                update
+                    yum update [package] [package] ...
+                downgrade 
+                    yum downgrade xxxx
+            检查可用升级
+                check-update
+                    yum check-update ...
+            卸载指定程序包
+                remove
+                    yum remove|rease package1 package2 ...
+            查看程序包的简要信息
+                info
+                    yum info package
+            查看指定的某个文件/功能/特性是有那个程序包提供的
+                provides
+                    yum provides 
+            清理本地缓存:------->yum会把下载到的元数据保存在本地缓存
+                clean
+                    yum clean all
+            构建本地缓存:
+                makecache----->每一次yum是会自动找所有的yum仓库,这一步其实没必要
+                    yum makechace
+            搜索:
+                search 关键字
+                    yum search 关键字   (模糊匹配机制)---->搜索程序包名以及summary信息
+            查看指定包锁依赖capabilities:
+                deplist package package ...
+            
+            version
+            history: 查看yum对程序包的事务记录(每一次更新,安装,卸载都会产生yum事务)
+                    |-  info   :查看详细信息
+                    |- summary :只看摘要信息
+                    |stats:显示统计信息
+                    |- packages-list:
+                    |- packages-info:
+                    |- list:
+                    |addon-info
+                    |redo
+                    |undo
+                    |rollback
+                    |new
+                    |sync
+            安装及升级本地程序包:(可以在本地解决依赖关系)
+            localinstall: (已经不怎用来 centos 67 rpm也可以在本地直接安装)
