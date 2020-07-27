@@ -1,0 +1,3 @@
+netstat [address_family_options] [--tcp|-t] [--udp|-u] [--udplite|-U] [--sctp|-S] [--raw|-w] [--listening|-l]
+[--all|-a]    [--numeric|-n]    [--numeric-hosts]    [--numeric-ports]    [--numeric-users]   [--symbolic|-N]
+[--extend|-e[--extend|-e]] [--timers|-o] [--program|-p] [--verbose|-v] [--continuous|-c] [--wide|-W] [delay]
