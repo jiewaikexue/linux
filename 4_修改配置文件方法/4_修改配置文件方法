@@ -1,0 +1,85 @@
+linux(网络配置方法)(3):修改配置文件
+
+ip 掩码 网关 及dns相关配置文件
+/etc/sysconfig/network-scripts/ifcfg-网络接口名称
+路由相关配置文件:
+  /etc/sysconfig/network-scripts/route-网络接口设备名称
+
+
+
+/etc/sysconfig/network-scripts/ifcfg-网络接口名称 内文件设置
+    
+        |-- DEVICE=:次配置文件应用到的设备
+        |-- HWADDR=mac地址:对应设备的mac地址
+        |-- BOOTPROTO='xxx':激活其设备使用的地址配置协议:
+        |--                 1.dhcp
+        |--                 2.static
+        |--                 3.none
+        |--                 4.bootp
+        |-- NM_CONTROLLED:NM是networkmanager的简写. networkmanager是一个服务配置脚本;  次网卡是否结实NM控制.
+        |-- ONBOOT=xx:在操作系统引导时,是否激活此设备
+        |-- TYPE=:接口的类型
+        |--       1.Ethernrt
+        |--       2.Bridge(桥接)
+        |-- UUID:设备的唯一表示
+        |-- IPADDR:指明ip地址 (主地址)
+        |-- NETMASK:掩码
+        |-- GATEWAY:默认网关
+        |-- DNS1:第一个DNS服务器指向(此处优先级最高)比etc/resolv.conf 里面的优先级药膏
+        |-- DNS2:第二个DNS服务器指向
+        |-- DNS3:
+        |-- PEERDNS:如果BOOTPROTO的是为DHCP,是否允许DHCP sever分配的dns服务器指向信息直接覆盖/etc/resolv.conf文件
+            ----------------------------------------------------------
+
+路由相关配置文件:
+  /etc/sysconfig/network-scripts/route-网络接口设备名称
+      两种风格的路由添加:
+           1. TARGET/mask via  GW
+              eg: 172.168.31.2/24 via 172.168.0.0  
+           2.每三行定义一条路由信息
+              ADDRESS#=TARGETip
+              NETMASK#=mask
+              GATEWAY#=GW
+              eg: ADRESS0=192.16.20.0
+                  NETMASK0=255.255.255.0
+                  GATEWAY0=172.16.0.1
+
+
+
+给网卡配置多个地址
+  1.ifconfig : lable
+  2.ip:
+      ip addr add lable
+  3编辑配置文件
+      GATEWAY:一般不写(因为一个网卡一般就一个网关)
+      UUID:不写,避免冲突
+      HWADDR:不指定
+      注意:别名的地址一定不能依靠DHCP提供
+            因为DHCP分配是按照网卡MAC的
+
+
+LINUX网络属性配置的tui()
+    system-config-network-tui
+    也可以使用setup
+  
+
+配置当前主机的主机名称;
+  hostname :查看
+  hostname [名称];设置
+这个配置文件在/etc/sysconfig/network
+    HOSTNAME=xxxxx:开机永久有效
+    NETWORKING=yes 这个不要乱改,改成no网络就瘫了
+
+/etc/udev/rules.d/70-presistent-net.rolese
+这里定义了mac地址和网卡的名称
+网络接口识别并命名相关的udev配置文件
+  /etc/udev/ruiles.d/70-presistennt-net.rulse
+  卸载网卡驱动:
+      modprobe -r e1000
+  装上网卡驱动
+      modeprobe e1000 
+
+更改配置文件之后一定要重启服务
+重启网络服务:
+  service network restart
+  /etc/rc.d/inir.d/network  restart
