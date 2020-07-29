@@ -1,0 +1,122 @@
+centos7网络属性配置
+
+
+(1)忘啦命名机制
+    1.基于systemd对网络设备命名的方式
+        A;如果说Firmware(主板上的固件)或者是BIOS为主板上集成的设备
+            提供的索引信息可用,且可预测,则根据其机制命名
+
+            例如:eno1
+        B:如果firmware或bios为PCI-E扩展槽,提供的索引信息可用,且可预测
+            则根据此索引命名
+            例如:ens1
+        C:如果硬件接口的物理位置信息可用,则根据此信息进行命名
+            例如:enp2s0
+        D:如果用户显示起用,也可根据mac地址进行命名,例如enx+mac地址,--->enx2387a1dc56
+        E:上述均不可用时,则采取传统命名机制,如eth1,eth2
+
+        上述的命名机制中,有的需要biosdevname程序的参与(需要安装并启用这个程序)
+
+(2)网络接口名称的组成格式
+        设备类型
+        en:etherent (以太网接口)
+        wl:wlan (无限局域网设备)
+        ww:wwan (无限广域网设备)
+
+        名称类型:
+            o<index>  主板上 集成  的设备的设备索引号   onbox
+            s<slot>  扩展槽  的索引号(支持虚拟设备):
+            x<MAC>   基于MAC 值的命名机制
+            p<bus>s<slot>  enp2s1 --->bus是pci总线 s是插槽号
+                            (用PCI插槽扩展的总线)
+(3)网卡设备的命名过程
+        第一步:
+            udev有一个辅助工具程序
+            是/lib/udev/rename_device,
+            会根据/usr/lib/udev/rules.d/60-net.rules的指示
+            去查询/etc/sysconfig/network-scrpic/ifcfg-name
+        第二步:
+            如果安装了biosdevname,,而且第一步没有发生
+            如果在内核启动时,没有传递 biosdevname=0,
+            则会根据/usr/lib/udev/rules.d/71-biosdevname.rules中的格式进行对网络接口进行命名
+        第三步:如果第二步没有重命名成功
+            通过检测网络接口设备,根据/lib/udev/rules.d/75-net-description的规则进行命名
+            会读取设备内部的一些信息来进命名.
+        第四步:如果第三步没有成功
+            接口不会被重命名,保持原来的名字
+
+
+(4)回归传统方式命名:
+    第一步: 
+            编辑 /etc/default/grub文件中的 GRUB_CMDLINE_LINUX;里面加上net.ifnames=0
+            GRUB_CMDLINE_LINUX="crashkernel=auto console=ttyS0 console=tty0 panic=5 net.ifnames=0 biosdevname=0 intel_idle.max_    cstate=1 intel_pstate=disable" 
+    第二步:
+            为grub2生成其配置文件:
+            grub2-mkconfig -o /boot/grub/grub2.cfg
+            或者生成到/etc/grub/grub2.cfg
+    第三步:
+            重启系统
+
+
+
+
+
+<2>地址配置工具:nmcli 用于控制NetworkManager的命令行工具
+       nmcli [OPTIONS...]OBJECT  {help |COMMAND}
+       object: 常用:connection  device
+       options;常用
+              
+        如何修改ip地址等属性
+          nmcli  connection modify FACE [+/-] seeting.property(这就是个字符串) value
+          nmcli  connection  modify   eth0  ipv4.addresses 172.16.100.12/16
+          nmcli  connection  modify   eth0 +ipv4.addresses 172.16.100.12/16
+      ------>>settiing.property距离
+              ip.addresses
+              ipv4.dns1
+              ipv4.gateway
+              ipv4.method/manual
+      ------->+/-:就是添加或者删除某个地址的意思
+              如果有+/-,,就是添加或减少
+              如果没有,就是修改当前的
+            
+
+         接口禁用
+          nmcli connection down  eth0
+          nmcli connection up  eth0
+
+----------------------
+--------------------- 掌握 nmcli dev/con 就行l
+
+
+------>重启networmanager  systemctl restart NwtworkManager
+
+
+
+
+
+
+
+
+
+
+
+nmcli图形界面: nmtui
+=====>这个网络管理界面,比setup好用,,认准这个
+
+
+
+更改主机名
+  1.hostname
+  2.hostnamectl 
+      --子命令:
+          status
+          set-xxxx
+
+
+
+博客作业;
+ ifcfg ip/ss 配置文件 nmcli
+ 参考资料;
+  redhat.com/hdocs
+  课外作业
+  nmap ncat tcpdump

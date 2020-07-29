@@ -1,0 +1,29 @@
+网络客户端工具
+
+lftp ftp lftpget wger
+
+lftp和ftp是ftp服务器的前端交互工具
+        lftp [-d] [-e cmd] [-p port] [-u user[,pass]] [site]
+        lftp -f script_file :指定脚本
+        lftp -c commands
+        lftp --version
+        lftp --help
+        子命令;
+         get
+         ls
+         cd
+         lcd
+
+
+lftpget URL
+
+ftp:  
+
+wget :
+    wget [option]... [URL]...
+        -q:静默模式 ,不显示下载进度
+        -c:支持断点续传
+        --progress=type: 指明进度条格式
+        -i: 把一大堆url放在一个文件流
+        -O:保存位置
+        --limit-rates= #:指定传输速率
