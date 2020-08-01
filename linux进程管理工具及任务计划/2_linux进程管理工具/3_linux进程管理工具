@@ -1,0 +1,267 @@
+
+现代计算机虚拟化
+    cpu:将计算能力切割成时间片,轮流分发给进程:timeslice
+    内存:将物理地址转换成线性地址(虚拟内存机制)
+    io虚拟化:分时复用技术
+
+
+
+vmstat(古老的一批)
+
+
+            vmstat # #:多少s刷新一次,显示几次1
+            vmstar -s:查看详细的内存统计数据
+    字段信息
+            [jie@VM-0-9-centos 2_linux进程管理工具]$ vmstat
+            procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+             r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+             4  0      0 147536 118204 1311472    0    0     7    34   23   22  1  1 99  0  0
+
+            --------------------------------------------------------------
+            |-  procs:与金城相馆
+            |-          r:等待运行的进程队列的长度,(也就是等待运行的进程的个数)
+            |-          b:阻塞状态的进程(不可终端睡眠)(因为io的影响)(io是不可中断的)
+            |-              (io的阻塞)
+            |-              也就是被阻塞的队列的长度
+            |-  memory:
+            |-          swpd: 交换分区内存(虚拟内存)的使用总量
+            |-          free: 物理内存的空闲总量:
+            |-          buffer:用于buffer的内存总量
+            |-          cache:用于cache的内存总量
+            |-  swap:站在swap角度
+            |-      si: 数据进入到swap的速率  #kb/s
+            |-      so: 数据传出swap的速率 kb/s
+            |-  io: 站在系统角度
+            |-      bi: 从块设备读入数据到系统内存的速度kb/s
+            |-      bo: 保存数据到块设备的速率kb/s
+            |-  system:
+            |-      in:intrttupts 中断速率:每秒发生多少个速率
+            |-      cs:context switch 进程切换的速率
+            |-  cpu
+            |-      us:用户空间占据比例
+            |-      sy;内核空间占用cpu
+            |-      id:空闲比例
+            |-      wa:等待io完成的时间比例
+            |-      st:被虚拟化偷走的时间比例
+            --------------------------------------------------------------
+
+
+
+
+
+
+pmap:查看某个进程的内存映射关系  虚拟内存----->正式内存
+
+[jie@VM-0-9-centos 2_linux进程管理工具]$ pmap 32339 -d
+32339:   /home/jie/.VimForCpp/vim/bundle/LanguageClient-neovim/bin/languageclient
+Address           Kbytes Mode  Offset           Device    Mapping
+0000000000400000    4252 r-x-- 0000000000000000 0fd:00001 languageclient
+0000000000a27000      64 rw--- 0000000000427000 0fd:00001 languageclient
+0000000000a37000      12 rw--- 0000000000000000 000:00000   [ anon  ]
+0000000002213000       4 rw--- 0000000000000000 000:00000   [ anon  ]
+00007efd1cbfc000       4 ----- 0000000000000000 000:00000   [ anon  ]
+00007efd1cbfd000    2052 rw--- 0000000000000000 000:00000   [ anon  ]
+00007efd1cdfe000       4 ----- 0000000000000000 000:00000   [ anon  ]
+00007efd1cdff000    2052 rw--- 0000000000000000 000:00000   [ anon  ]
+00007efd1d000000    6144 rw--- 0000000000000000 000:00000   [ anon  ]
+00007efd1d6ea000      28 rw--- 0000000000000000 000:00000   [ anon  ]
+00007fff0877c000     132 rw--- 0000000000000000 000:00000   [ stack  ]
+00007fff087e6000       8 r-x-- 0000000000000000 000:00000   [ anon  ]
+ffffffffff600000       4 r-x-- 0000000000000000 000:00000   [ anon  ]
+mapped: 14760K    writeable/private: 10488K    shared: 0K
+
+------>[ anon ]匿名页
+------>[ stack ]:栈
+------>[ heap ]:堆
+------>FILE_NAME;文件
+使用格式:
+        pmap [options] PID:
+                -x:显示详细格式信息
+                -d:以磁盘格式显示
+                =====>,每一个进程的进程映射表,都在/proc/PID/maps
+                =====>pmap也就是读取这个文件
+
+        另外一中实现:cat /proc/pid/maps
+
+
+
+
+
+glances:跨平台的
+        内建命令:h ----看帮助手册.是在记不住
+            a  Sort processes automatically          b  Bytes or bits for network I/O      
+            c  Sort processes by CPU%                l  Show/hide alert logs               
+            m  Sort processes by MEM%                w  Delete warning alerts              
+            u  Sort processes by USER                x  Delete warning and critical alerts 
+            p  Sort processes by name                1  Global CPU or per-CPU stats        
+            i  Sort processes by I/O rate            I  Show/hide IP module                
+            t  Sort processes by TIME                D  Enable/disable Docker stats        
+            d  Show/hide disk I/O stats              T  View network I/O as combination    
+            f  Show/hide filesystem stats            U  View cumulative network I/O        
+            n  Show/hide network stats               F  Show filesystem free space         
+            s  Show/hide sensors stats               g  Generate graphs for current history
+            2  Show/hide left sidebar                r  Reset history                      
+            z  Enable/disable processes stats        h  Show/hide this help screen         
+            3  Enable/disable quick look plugin      q  Quit (Esc and Ctrl-C also work)    
+            e  Enable/disable top extended stats  
+            /  Enable/disable short processes name
+            0  Enable/disable Irix process CPU    
+        选项
+          -b:以字节为单位,显示网卡数据速率
+          -d:关闭磁盘i/o模块
+          -f /path/to/file设置输出文件的位置及其格式
+          -o {HTML/CSV}:输出格式
+          -m:禁用mount模块
+          -n:禁用网络模块
+          -t #:延迟刷新的时间间隔
+          -1:每个cpu相关数据单独显示
+      在c/s模式下运行glances命令
+          服务模式:
+              glances -s -B ipaddr(服务端自己的ip)
+              推荐更换端口:-p
+              在加密一下
+          客户端模式:
+              glances -c IPADDR(服务端地址)
+
+
+
+
+dstat命令:vmstat的替换,风格不同
+          ----total-cpu-usage---- -dsk/total- -net/total- ---paging-- ---system--
+          usr sys idl wai hiq siq| read  writ| recv  send|  in   out | int   csw 
+          1   1  99   0   0   0|6966B   34k|   0     0 |   0     0 | 202   381 
+          1   1  98   0   0   0|   0     0 | 150B  964B|   0     0 | 109   197 
+          0   0 100   0   0   0|   0     0 | 559B 1133B|   0     0 | 117   221 
+          2   1  97   0   0   0|   0     0 |1836B 3695B|   0     0 | 204   338 
+
+    常见选项:
+
+      -c:起用cpu状态数据查看
+      -C #,# ...,total:
+      -d: 显示磁盘的读写速率
+      -D hda,hdb,...,total :指明那一块磁盘和总共的
+      -g:显示页面统计数据
+      -i:仅仅显示中断的统计数据
+      -l: 显示load(负载 0.01 0.02 0.03)(1分钟 5分钟15分)
+      -n:只显示网络统计数据
+      -m:只显示内存相关统计数据
+      -p:显示process相关统计数据
+      -i:显示i/o相关数据
+      -s:swap 显示交换内存相关的统计数据
+      -t:显示当前时间
+      -fs
+      -raw:裸套接字
+
+      --ipc:显示进程间通信的相关数据(信号,共享内存 管道,套机子)
+            消息队列 
+      --lock:显示锁信息
+      --socket:显示socket信息
+              相当于很多东西一起用
+
+      --tcp:显示tcp数据
+      --udp:
+      --unix:
+      -a: 相当于 -cdngy
+
+      --top-XXX:显示XXX字段最大的信息
+                eg:--top-io:显示最占用~的
+                  --top-memory:显示最占用~de``
+                  --top-cpu
+                  --top-int:中断
+                  --top-lantency:~延迟~
+
+
+
+
+
+
+
+
+
+管理进程命令:kill
+    想进城发送控制信号
+      
+      kill -l:信号列表
+      man 7 signal:里面也有信号列表
+
+    (1)常用信号
+          1.sighup:无序关闭进程,让其重读配置文件
+          2.sigint;终止正在运行的进程,相当于ctrl+c
+          9.sigkill:杀死正在运行的进程
+          15:sigterm:优雅关闭.终止正在运行的进程
+                    杀死和终止的区别:
+                        kill:一击致命,立即杀死
+                        term:等你后事处理好,在杀死(秋后处斩)
+          18.sigcont:手动将停止态的进程唤醒
+          19.sigstop:将对方转为停止状态
+
+      指定信号的方法:
+            1.使用信号的数字标识:1 2 9
+            2.使用数字的完整名称:sighup
+            3.使用信号的简写名称:hup
+      想进程发信号:
+            kill -SIGNAL PID
+      终止"名称"之下的所有进程
+            kill -signal  进程名字
+
+
+
+linux的作业控制:jobs
+      jobs:一个作业,可能会包含多个进程
+
+      前台作业:运行时占用率命令行的作业
+      后台作业:可以通过终端启动,但是启动后,立即转入后台运行(释放了终端)0
+
+      如何让作业运行到后台:
+          (1)运行中的作业:
+              ctrl+z   / fg切换回去
+          (2)尚未启动的作业
+              命令 &:
+                此类作业,虽然被送到后台,但是依然和终端相关
+                ----->终端终止了,与这个终端相关的进程也会终止
+                ----->如果希望送到后台后,与终端彻底分离
+                    nohup 命令 &:彻底脱离当前终端,挂到后台
+          <3>查看所有后台作业
+           [root@VM-0-9-centos 2_linux进程管理工具]# jobs
+           [1]   已停止               dstat
+           [2]   已停止               dstat
+           [3]-  已停止               htop
+           [4]+  已停止               /root/.VimForCpp/nvim 3_linux进程管理工具
+           解释:
+                [#]:作业号
+                +:默认
+                -:第二默认
+        <4>作业控制
+            fg [[%]作业号]:调回后台作业到前台
+                            %可省去
+            bg [[%]作业号]:让后台的作业,继续运行 相当于18好信号 sigcontiu
+            kill [%作业号]:终止某个作业)(%不可以省略)
+            ------>剥离终端之后,无法ctrl+c/z
+            ------>只能kill
+
+
+进程优先级调整:NICE值
+            动态优先级调整:惩罚机制和鼓励政策
+                            某个进程占用时间过多,内核会自动降低它的优先级
+            静态优先级:100~139
+                        因为我们可以通过手动修改
+
+
+            进程启动是nice值默认为0,优先级为120(120-20=100,120+19=139)
+            命令:
+
+            nice:   nice值范围-20~19
+                    nice命令:
+                        nice -n # 进程:以指定的nice值运行
+                        ---->查看nice值
+                                ps axo ni,pid,comm
+            renice:
+                    对已经运行的进程,调整nice值
+                    renice -n # pid:
+
+            普通用户.只能调大数字:也就是调整的是用户优先级(100~139)
+            调大nice值,,对于100-139来说就是降低优先级
+            root:无所谓啦,想咋搞咋搞
+
+
+

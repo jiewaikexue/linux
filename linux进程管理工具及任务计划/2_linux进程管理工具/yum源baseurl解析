@@ -1,0 +1,55 @@
+原来如此。这发行版本号可是藏的够深的。
+小结：
+yum中的$releasever变量是取redhat-release-serverrpm包的属性值( %{version} )。
+[root@ldap01 ~]# rpm -q --qf %{version}redhat-release-server;echo
+6Server
+查看关于yum的配置
+
+ls /etc/yum* -ld:
+
+查看/etc/yum.repos.d下的文件
+
+查看CentOS-Base.repo内容：
+
+部分内容：
+
+[base]
+baseurl=http://mirror.centos.org/centos/$releasever/os/$basearch/
+mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-pgg/RPM-GPG-KEY-CentOS-6
+[update]
+baseurl=http://mirror.centos.org/centos/$releasever/updates/$basearch/
+mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates
+
+我们看出来里面包含大量的变量：
+
+$releasever和$basearch
+
+$releasever的值,这个表示当前系统的发行版本，可以通过如下命令查看：
+
+rpm -qi centos-release
+
+结果如下：
+
+其中的Version：6就是我们系统的版本号
+
+$basearch是我们的系统硬件架构(CPU指令集),就是我们常说的i386\i486\i586\i686\...
+
+使用如下命令即可：
+
+arch
+
+输出如下：
+
+我这个处理器是i686，现在所有的intel 32位体系（包括AMD等兼容CPU)都叫i386体系，包括P4。i686仍然属于i386体系，不过对CPU（相对于386)的特性作了指令优化。 GNU/Linux分为i386、alpha、PowerPC、Sun等各个不同版本，所有从Intel386-P4都用i386版本，但i386版本中 有几个内核（i386,i486,i586,i686)，安装时安装程序检测到你得CPU级别后，自动为你安装相应内核。 
+
+在Linux中使用命令arch可以初步查看出当前系统所识别出来的机器CPU类型，如"i386", "i486","i586", "alpha", "sparc", "arm", "m68k","mips","ppc","ia64","x86_64"等；ia64和x86_64就说明这台机器是64位的；
+
+所以我这儿要使用i386作为$basearch的值
+
+baseurl=http://mirror.centos.org/centos/$releasever/os/$basearch/
+
+完整路径便是
+
+baseurl=http://mirror.centos.org/centos/6/os/i386/

@@ -1,0 +1,144 @@
+
+linux任务计划,周期性任务计划
+
+未来的某个时间点执行一次任务:at batch
+周期性运行某个任务:cron
+
+
+
+
+邮件服务:
+    smtp: simple mail transmission protocol (简单邮件传输协议)
+            smtp不提供邮桶
+    pop3:Post office Protocol帮助用户检索邮件
+
+    imap4:互联网邮件访问协议
+
+linux本机邮件功能
+    mailx命令: 收发邮件的工具
+    MUA:邮件用户代理
+
+一次性任务计划:
+at [opention] TIME:
+    TIME:下一个这个时间
+        HH:MM[YYYY-mm-dd]
+        noon:正午12点
+        midnight:晚上12点
+        tratime:下午四点
+        tomorrow:明天
+        now+时长{minutes/hours/days/weeks}:相对时间表示法
+        eg:
+          at now+3minutes
+      at -q:查看正在等待的作业
+      at -l: 队列号:列出指定队列
+      at -d #:删除指定的作业号
+      at -c:查看具体的作业任务 
+      at -f /path/from/some/file:从制定的文件中读取任务
+
+
+
+bash命令:
+    让系统自行选择空闲时间,去执行此处指定的任务
+    (一般不用)
+
+
+
+
+周期性任务计划:cron
+    相关内的程序包:
+        cronie:主程序包,提供了crond守护进程及相关辅助工具
+        cronie-anacron:cronie的补充程序,用来监控cronie任务的执行情况
+                        如果cronie中的任务,在过去某个应该运行的时间点没有运行
+                        则anacron会随后启动一次此任务
+        crontabs;包含了centos提供的系统维护任务
+      
+      一定要确保crond守护进程是启动了的
+      确认方法:
+      centos 7
+        systemctl status crond |grep running
+      centos6
+        service crond status
+
+
+    计划要周期性执行的任务提交给crond,由其来实现到指定时间点的运行
+          任务有两种
+            1.系统cron任务:  系统自己的维护任务
+              编辑/etc/crontab
+            2.用户cron任务:    
+              使用crontab命令;
+
+        [root@VM-0-9-centos 3_linux任务计划]# cat /etc/crontab 
+       ------------------------------------------------------------
+       |-   SHELL=/bin/bash
+       |-   PATH=/sbin:/bin:/usr/sbin:/usr/bin
+       |-   MAILTO=root
+
+       |-   # For details see man 4 crontabs
+       |-   
+       |-   # Example of job definition:
+       |-   # .---------------- minute (0 - 59)
+       |-   # |  .------------- hour (0 - 23)
+       |-   # |  |  .---------- day of month (1 - 31)
+       |-   # |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+       |-   # |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+       |-   # |  |  |  |  |
+       |-   # *  *  *  *  * user-name  command to be executed
+       |-   
+    
+            eg: 20 09 * * *  /bin/echo "howdy"
+                每三分钟执行一次任务             
+                   */3 * * * * jie xxxx
+           注解:看上面那个框框,明说了PATH只有4个路径---->所依命令要是有绝对命令
+                   * 表示 任意---->也就是  every                                  
+            <**>时间表示法:         
+                    (1)特定值: 
+                         给定时间点,有效范围内的值
+                    (2)*                           
+                         给定时间点上有效取值范围的所有值: every
+                                                                  
+                    (3)给定离散取值
+                          # #,#,#,# # 
+                    (4)给定连续取值:
+                             #-#(和glob一样哈哈哈哈)
+                    (5)在指定时间范围上,定义步长
+                           /#: #就是步长             
+                       eg: */3 每三分钟
+                          20-50/3 20-50范围内每三分钟
+         用户cron:                              
+              crontab命令定义:每个用户都有专用的cron任务文件:/var/spool/cron/USERNAME
+              ----->可以使用crontab命令 也可以直接编辑上述文件
+              ----->咱还是乖乖的去编辑文件把,cntable -e因为vim配置文件的过坏掉了
+              ----->日!,普通用户没权限!
+            crontab -l:列出列表
+            crontab -e:编辑任务
+            crontab -r:删除所有
+            crontab -u user:仅仅root可运行,替指定用户管理cron任务    
+            ------->直接操作文件算了,自己管自己的多好
+
+    ----->真正的运行任务的是由crond守护进程来执行的
+            ps aux | grep crond
+            属主是root
+
+    注意:运行结果以邮件通知给相关用户
+        (1)COMMAND > /dev/null;
+        (2)COMMAND &> /dev/null;
+        (3)建议使用绝对路径
+        (4) 对于cron任务来说 %有特殊用法
+                所以,命令中的% 需要转义
+                或者 所有的% 写成 '%'
+
+
+    思考:
+        如何在秒级运行任务
+            * * * * * for min in 0 1 2;do echo "hi" done
+        如何实现没7分钟运行一次任务(7是不能被6整除的)
+            ----->可以使用sleep命令
+        每4小时备份一次etc目录到/backup目录 且奥村的文件名称为 etc-yy-mm-dd.tar.xz
+        没周2 4 7 备份/var/log/message文件到logs目录中 文件名 message -yy-dd
+            sleep命令:
+            sleep # [单位]
+
+            单位  s
+                  m
+                  h
+                  d
